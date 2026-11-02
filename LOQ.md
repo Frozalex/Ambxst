@@ -4,7 +4,7 @@ Fork de [Axenide/Ambxst](https://github.com/Axenide/Ambxst), adapté au Lenovo L
 
 ## Adaptations
 
-- Palette **LOQ Monochrome**, profil **Lenovo LOQ**, fond statique teinté par le mécanisme natif Ambxst.
+- Palette **LOQ Monochrome** pour le bureau (barre, dock, menus, widgets, bordures), profil **Lenovo LOQ**, fond statique teinté par le mécanisme natif Ambxst. Les icônes des applications conservent leurs couleurs (`tintIcons=false`) ; les palettes des applications ne sont pas exportées depuis le thème du bureau.
 - Animations courtes ; prévisualisations de fenêtres, ligne ondulée et rotation de pochette désactivées dans le profil.
 - Statistiques uniquement lorsque l’onglet matériel est visible, à 2 secondes sur secteur et 5 secondes sur batterie.
 - `AMBXST_NVIDIA_METRICS=0` interdit toute exécution de `nvidia-smi` par le moniteur. Une mesure désactivée s’affiche « — », pas comme une utilisation réellement mesurée à zéro.

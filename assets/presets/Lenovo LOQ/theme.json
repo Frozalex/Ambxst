@@ -6,7 +6,7 @@
     "fontSize": 14,
     "monoFont": "Iosevka Nerd Font Mono",
     "monoFontSize": 14,
-    "tintIcons": true,
+    "tintIcons": false,
     "enableCorners": true,
     "animDuration": 160,
     "shadowOpacity": 0.5,
