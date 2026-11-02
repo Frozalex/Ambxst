@@ -157,7 +157,7 @@ Item {
     // after boot so the first real open doesn't stall on QML compilation.
     Timer {
         interval: 5000
-        running: !screenVisibilities.launcher
+        running: Quickshell.env("AMBXST_LOQ_PROFILE") !== "1" && !screenVisibilities.launcher
         repeat: false
         onTriggered: {
             persistentLauncherViewLoader.active = true;

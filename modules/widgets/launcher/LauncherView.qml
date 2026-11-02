@@ -1099,7 +1099,9 @@ Rectangle {
         // Tab 1: Clipboard
         Loader {
             id: clipboardLoader
-            active: currentTab === 1 || root.clipboardEverLoaded || root.prewarmTabs
+            active: Quickshell.env("AMBXST_LOQ_PROFILE") === "1"
+                    ? root.visible && currentTab === 1
+                    : currentTab === 1 || root.clipboardEverLoaded || root.prewarmTabs
             sourceComponent: Component {
                 ClipboardTab {
                     leftPanelWidth: root.leftPanelWidth
@@ -1129,7 +1131,9 @@ Rectangle {
             id: emojiLoader
             Layout.fillWidth: true
             Layout.fillHeight: true
-            active: currentTab === 2 || item !== null
+            active: Quickshell.env("AMBXST_LOQ_PROFILE") === "1"
+                    ? root.visible && currentTab === 2
+                    : currentTab === 2 || item !== null
             sourceComponent: Component {
                 EmojiTab {
                     anchors.fill: parent

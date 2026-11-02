@@ -102,6 +102,12 @@ bash -n loq/launch
 
 Le verrouillage et le cycle de veille complet demandent un essai manuel. Aucun gain de RAM, de watts ou d’autonomie n’est présenté comme mesuré : Ambxst fournit davantage de fonctions que le prototype, avec une empreinte mémoire différente. Les optimisations ci-dessus réduisent des activités précises sans garantir une baisse de la mémoire totale de la session.
 
+## Mémoire du shell
+
+Le profil LOQ désactive le préchargement invisible du lanceur et du presse-papiers. Les vues du presse-papiers et des emojis sont déchargées lorsqu’elles sont cachées ; leurs données restent gérées par les services existants. Les vues de notes et de sessions terminal restent inchangées pour préserver leur état. Le style et les raccourcis ne sont pas modifiés. La première ouverture peut demander un peu plus de temps.
+
+Mesure ponctuelle sur ce Lenovo, huit secondes après chaque redémarrage de Quickshell : PSS de 457004 à 411915 Kio, soit environ 446 à 402 Mio (44 Mio, 9,9 %). Cette comparaison concerne le processus Quickshell, pas la mémoire totale du PC. Les ouvertures/fermetures du lanceur, presse-papiers, emojis et tableau de bord ont été demandées dans la session ; aucune nouvelle erreur QML n’a été relevée dans le journal consulté. La stabilité de la consommation sur une longue session reste à mesurer.
+
 ## Licence et suivi
 
 La licence AGPL-3.0 et les crédits d’Ambxst sont conservés. Le contrôleur HDMI réutilisé comporte sa notice MIT dans `loq/HDMI-LICENSE`. Le dépôt amont reste configuré comme distant `upstream` ; les adaptations peuvent être comparées et fusionnées lors des mises à jour.
