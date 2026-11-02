@@ -1,4 +1,4 @@
-> **Lenovo LOQ adaptation:** see [LOQ.md](LOQ.md) for the monochrome preset, battery/NVIDIA changes and tests. Native Ambxst keybindings are preserved. The upstream documentation follows below.
+> **Lenovo LOQ adaptation:** see [LOQ.md](LOQ.md) for the monochrome preset, battery/NVIDIA changes, optional Hyprland shortcuts and tests. The upstream documentation follows below.
 
 <p align="center">
 <img src="./assets/ambxst/ambxst-logo-color.svg" alt="Ambxst Logo" style="width: 50%;" align="center" />

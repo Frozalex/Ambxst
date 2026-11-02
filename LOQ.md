@@ -1,6 +1,6 @@
 # Ambxst pour Lenovo LOQ
 
-Fork de [Axenide/Ambxst](https://github.com/Axenide/Ambxst), adapté au Lenovo LOQ 15AHP10 avec Ryzen 7 250, Radeon 780M intégrée et RTX 5060. L’interface, les composants et les raccourcis natifs d’Ambxst sont conservés. Ce profil remplace le prototype CHACAL ; il ne recrée pas son interface.
+Fork de [Axenide/Ambxst](https://github.com/Axenide/Ambxst), adapté au Lenovo LOQ 15AHP10 avec Ryzen 7 250, Radeon 780M intégrée et RTX 5060. L’interface et les composants natifs d’Ambxst sont conservés. Un profil facultatif reprend les raccourcis de Hyprland. Ce profil remplace le prototype CHACAL ; il ne recrée pas son interface.
 
 ## Adaptations
 
@@ -40,7 +40,36 @@ Les réglages Ambxst récents sont conservés à part avant restauration. Les so
 
 ## Raccourcis
 
-Les raccourcis proviennent intégralement de la configuration native Ambxst ; aucune réaffectation LOQ n’est appliquée. La rubrique Clavier d’Ambxst reste la source de vérité et permet de les consulter ou modifier.
+Le Lenovo utilise le profil **Hyprland**, appliqué à la demande de son utilisateur. Il reprend les combinaisons de la [configuration officielle](https://github.com/hyprwm/Hyprland/blob/main/example/hyprland.lua), en ouvrant le lanceur Ambxst avec Super+R. Les fonctions supplémentaires Ambxst restent accessibles sans conflit. La rubrique Clavier d’Ambxst permet de consulter et modifier ces préférences.
+
+| Raccourci | Action |
+|---|---|
+| Super+Q / Super+E | Terminal Kitty / fichiers Dolphin |
+| Super+R | Lanceur Ambxst |
+| Super+C / Super+V | Fermer / basculer en fenêtre flottante |
+| Super+flèche | Sélectionner une fenêtre |
+| Super+1…0 / Super+Maj+1…0 | Bureau 1…10 / y déplacer la fenêtre |
+| Super+molette | Bureau occupé suivant ou précédent |
+| Super+S / Super+Maj+S | Bureau spécial / y déplacer la fenêtre |
+| Super+P / Super+J | Pseudo-tiling / changer la séparation (disposition dwindle) |
+| Super+M | Quitter la session via hyprshutdown |
+| Super+clic gauche / droit maintenu | Déplacer / redimensionner une fenêtre |
+| Super+D / Super+Maj+C | Tableau de bord / paramètres Ambxst |
+| Super+Ctrl+V / Super+Ctrl+S | Presse-papiers / outils Ambxst |
+| Impr. écran / Super+Maj+R | Capture / enregistrement d’écran |
+| Super+L / Super+Échap | Verrouiller / menu d’alimentation |
+
+Sur le clavier français AZERTY de ce profil, les bureaux utilisent les symboles non décalés de la rangée 1–0 (`& é " ' ( - è _ ç à`) : Super+& sélectionne le bureau 1, et Super+Maj+& y déplace la fenêtre. Les raccourcis supplémentaires sans conflit, notamment Super+F pour le plein écran, sont conservés. Le bureau spécial Ambxst reste celui déjà utilisé, sans renommage.
+
+Pour appliquer ce choix après un premier lancement d’Ambxst :
+
+```bash
+python3 loq/keybindings.py
+```
+
+Kitty, Dolphin et hyprshutdown doivent être installés (ils sont présents sur ce Lenovo). Le script sauvegarde `binds.json` dans `~/.local/state/ambxst-loq/keybindings/`, refuse les liens symboliques et les conflits, puis remplace le fichier atomiquement. Ambxst régénère sa configuration à partir de ces préférences. Le script n’est pas exécuté au démarrage : les modifications ultérieures dans l’interface restent libres. Aucun fichier généré Hyprland n’est modifié à la main.
+
+Pour revenir à une sauvegarde précise : `python3 loq/keybindings.py --restore CHEMIN_SAUVEGARDE`. Le fichier courant est également sauvegardé avant ce retour.
 
 ## HDMI
 
@@ -58,9 +87,10 @@ Le contrôleur requiert une session Hyprland en Lua pour ce profil. Les tests ut
 
 - Suite Go du backend : `go test ./...`, réussie localement avec Go 1.27.3 et les dépendances vendues par le projet.
 - Tests spécifiques : interdiction d’exécuter un faux `nvidia-smi` lorsque les métriques sont désactivées, traitement des états runtime absents, choix des effets audio, conservation du lanceur du fork dans la configuration générée.
-- 17 tests Python : dispositions HDMI, erreur de mode, retour indépendant, débranchement, protection des préférences symboliques et restauration après une erreur d’écriture injectée.
+- 21 tests Python : dispositions HDMI, erreur de mode, retour indépendant, débranchement, protection des préférences symboliques, restauration après une erreur d’écriture injectée, conflits de raccourcis, AZERTY, conservation des préférences et retour exact à une sauvegarde.
 - Chargement réel Quickshell 0.3.2 sur Hyprland 0.56.2 en Lua, configuration générée et intégration acceptées avec `config ok`.
 - Vérification des notifications, du lanceur et de la disponibilité des trois profils natifs dans la session.
+- Profil de raccourcis : 126 entrées chargées, aucun doublon, aucune erreur de configuration et validation isolée `config ok`. L’injection de touches virtuelles n’a pas déclenché les actions dans cette session ; les frappes au clavier physique restent à confirmer. La déconnexion Super+M n’a pas été déclenchée pour le test.
 
 Commandes reproductibles :
 
