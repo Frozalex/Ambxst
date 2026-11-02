@@ -245,7 +245,9 @@ func runShell() {
 	}
 
 	runDetached("pkill -f 'dunst|mako|swaync'")
-	runDetached("pkill -f 'easyeffects.*gapplication-service' ; nohup easyeffects --gapplication-service >/dev/null 2>&1 &")
+	if autostartEasyEffects() {
+		runDetached("pkill -f 'easyeffects.*gapplication-service' ; nohup easyeffects --gapplication-service >/dev/null 2>&1 &")
+	}
 
 	if iconTheme, err := exec.Command("gsettings", "get", "org.gnome.desktop.interface", "icon-theme").Output(); err == nil {
 		os.Setenv("QS_ICON_THEME", strings.Trim(strings.TrimSpace(string(iconTheme)), "'"))
@@ -433,3 +435,6 @@ func fileExists(path string) bool {
 	_, err := os.Stat(path)
 	return err == nil
 }
+
+// Audio effects remain optional for battery-oriented profiles.
+func autostartEasyEffects() bool { return os.Getenv("AMBXST_EASYEFFECTS_AUTOSTART") != "0" }

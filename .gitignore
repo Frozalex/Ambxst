@@ -8,3 +8,7 @@ result
 # Keep Go package sources visible when a global ignore file excludes pkg/.
 !/backend/pkg/
 backend/cmd/ambxst/ambxst
+
+# Local Python runtime caches
+__pycache__/
+*.pyc

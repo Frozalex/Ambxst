@@ -2,6 +2,7 @@ package compositor
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -32,7 +33,11 @@ func Render(in Input, gameMode bool) string {
 
 	// [startup]
 	b.WriteString("\n[startup]\n")
-	b.WriteString(`exec-once = "ambxst"` + "\n")
+	startup := os.Getenv("AMBXST_STARTUP_COMMAND")
+	if startup == "" {
+		startup = "ambxst"
+	}
+	fmt.Fprintf(&b, "exec-once = %q\n", startup)
 
 	// [appearance]
 	writeAppearance(&b, in, gameMode)

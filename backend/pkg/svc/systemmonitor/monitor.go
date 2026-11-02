@@ -12,19 +12,19 @@ import (
 
 // StaticInfo is the one-time detected hardware info.
 type StaticInfo struct {
-	CPUModel   string `json:"cpu_model"`
-	GPUNames   []string `json:"gpu_names"`
-	GPUVendors []string `json:"gpu_vendors"`
+	CPUModel   string            `json:"cpu_model"`
+	GPUNames   []string          `json:"gpu_names"`
+	GPUVendors []string          `json:"gpu_vendors"`
 	DiskTypes  map[string]string `json:"disk_types"`
-	GPUCount   int    `json:"gpu_count"`
+	GPUCount   int               `json:"gpu_count"`
 }
 
 // Delta holds a sample of live metrics.
 type Delta struct {
-	CPU  CPU   `json:"cpu"`
-	RAM  RAM   `json:"ram"`
-	Disk Disk  `json:"disk"`
-	GPU  GPU   `json:"gpu"`
+	CPU  CPU  `json:"cpu"`
+	RAM  RAM  `json:"ram"`
+	Disk Disk `json:"disk"`
+	GPU  GPU  `json:"gpu"`
 }
 
 type CPU struct {
@@ -387,13 +387,10 @@ func (m *Monitor) sampleGPU() (usages []float64, temps []int) {
 		u, t := 0.0, -1
 		switch g.Vendor {
 		case "nvidia":
-			if g.PowerPath != "" {
-				data, err := os.ReadFile(g.PowerPath)
-				if err == nil && strings.TrimSpace(string(data)) != "active" {
-					usages = append(usages, 0.0)
-					temps = append(temps, -1)
-					continue
-				}
+			if !nvidiaRuntimeActive(g.PowerPath) {
+				usages = append(usages, -1)
+				temps = append(temps, -1)
+				continue
 			}
 			u, t = nvidiaQuery(g.PCIID)
 		case "amd":

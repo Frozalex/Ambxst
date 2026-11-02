@@ -23,6 +23,9 @@ func statfs(mount string, st *syscallStatfs) error {
 }
 
 func nvidiaQuery(pciID string) (usage float64, temp int) {
+	if os.Getenv("AMBXST_NVIDIA_METRICS") == "0" {
+		return -1, -1
+	}
 	out, err := exec.Command("nvidia-smi", "-i", pciID,
 		"--query-gpu=utilization.gpu,temperature.gpu",
 		"--format=csv,noheader,nounits").Output()
@@ -50,4 +53,13 @@ func amdTemp(card string) int {
 	}
 	val, _ := strconv.Atoi(strings.TrimSpace(string(data)))
 	return val / 1000
+}
+
+// Fail closed: an unavailable runtime state is never permission to wake a dGPU.
+func nvidiaRuntimeActive(path string) bool {
+	if path == "" {
+		return false
+	}
+	data, err := os.ReadFile(path)
+	return err == nil && strings.TrimSpace(string(data)) == "active"
 }

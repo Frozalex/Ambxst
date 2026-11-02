@@ -66,6 +66,7 @@ FileView {
         interval: 100
         repeat: false
         onTriggered: {
+            if (Quickshell.env("AMBXST_THEME_EXPORTS") === "0") return;
             qtCtGenerator.generate(colors);
             gtkGenerator.generate(colors);
             pywalGenerator.generate(colors);

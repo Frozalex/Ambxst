@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+loq_source=$(readlink -f -- "${BASH_SOURCE[0]}")
+loq_root=$(cd -- "$(dirname -- "$loq_source")/.." && pwd)
+printf -v AMBXST_STARTUP_COMMAND '%q' "$loq_source"
+export AMBXST_STARTUP_COMMAND
+export AMBXST_SHELL="$loq_root"
+export AMBXST_LOQ_PROFILE=1
+export AMBXST_HYPRLAND_LUA=1
+export AMBXST_THEME_EXPORTS=0
+export AMBXST_NVIDIA_METRICS=0
+export AMBXST_EASYEFFECTS_AUTOSTART=0
+if [[ ! -x "$loq_root/ambxst" ]]; then
+    printf '%s\n' 'Compiler le backend avec make build avant de lancer ce profil.' >&2
+    exit 1
+fi
+if [[ "${1:-}" == "displays" ]]; then
+    exec python3 "$loq_root/loq/display-menu.py"
+fi
+exec "$loq_root/ambxst" "$@"

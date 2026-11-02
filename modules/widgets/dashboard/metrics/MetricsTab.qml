@@ -489,7 +489,7 @@ Rectangle {
                                         // Otherwise show GPU index if multiple, or just "GPU" if single
                                         return SystemResources.gpuCount > 1 ? `GPU ${index}` : "GPU";
                                     }
-                                    value: (SystemResources.gpuUsages[index] || 0) / 100
+                                    value: Math.max(0, SystemResources.gpuUsages[index] || 0) / 100
                                     barColor: {
                                         // Color based on vendor
                                         const vendor = SystemResources.gpuVendors[index] || "";
@@ -527,7 +527,7 @@ Rectangle {
                                     }
 
                                     Text {
-                                        text: `${Math.round(SystemResources.gpuUsages[index] || 0)}%`
+                                        text: (SystemResources.gpuUsages[index] ?? -1) < 0 ? "—" : `${Math.round(SystemResources.gpuUsages[index])}%`
                                         font.family: Config.theme.font
                                         font.pixelSize: Styling.fontSize(-2)
                                         font.weight: Font.Medium

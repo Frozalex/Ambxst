@@ -1,6 +1,7 @@
 pragma Singleton
 import QtQuick
 import Quickshell
+import Quickshell.Services.UPower
 import qs.config
 import qs.modules.globals
 pragma ComponentBehavior: Bound
@@ -52,7 +53,7 @@ Singleton {
     property int totalDataPoints: 0
 
     // Update interval
-    property int updateInterval: 2000
+    property int updateInterval: UPower.onBattery ? 5000 : 2000
 
     property int subscriptionHandle: -1
 
@@ -180,7 +181,7 @@ Singleton {
             while (newGpuTempHistories.length < gpuCount) newGpuTempHistories.push([]);
 
             for (let i = 0; i < gpuCount; i++) {
-                newGpuHistories[i] = pushHistory(newGpuHistories[i], (gpuUsages[i] || 0) / 100);
+                newGpuHistories[i] = pushHistory(newGpuHistories[i], Math.max(0, gpuUsages[i] || 0) / 100);
                 newGpuTempHistories[i] = pushHistory(newGpuTempHistories[i], (gpuTemps[i] ?? -1));
             }
 

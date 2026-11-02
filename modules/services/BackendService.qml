@@ -38,7 +38,7 @@ Singleton {
     Timer {
         id: probeTimer
         interval: 500
-        running: true
+        running: !root.socketAvailable
         repeat: true
         onTriggered: root.tryConnect()
     }
@@ -89,7 +89,7 @@ Singleton {
 
     property bool socketAvailable: false
     onSocketAvailableChanged: {
-        if (!socketAvailable) probeTimer.running = true;
+        probeTimer.running = !socketAvailable;
     }
 
     // Connect on the spot instead of waiting for probeTimer's first tick;

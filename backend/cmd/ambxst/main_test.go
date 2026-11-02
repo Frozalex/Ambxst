@@ -22,3 +22,14 @@ func TestDefaultTMUXTmpDir(t *testing.T) {
 		})
 	}
 }
+
+func TestEasyEffectsAutostartOptOut(t *testing.T) {
+	t.Setenv("AMBXST_EASYEFFECTS_AUTOSTART", "0")
+	if autostartEasyEffects() {
+		t.Fatal("opt-out ignored")
+	}
+	t.Setenv("AMBXST_EASYEFFECTS_AUTOSTART", "1")
+	if !autostartEasyEffects() {
+		t.Fatal("explicit opt-in ignored")
+	}
+}

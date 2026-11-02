@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import QtQml
 import Quickshell
+import Quickshell.Wayland as Wayland
 import qs.config
 
 Singleton {
@@ -45,33 +46,24 @@ Singleton {
         syncSleepCommands();
     }
 
-    // Master Idle Logic
-    property int elapsedIdleTime: 0
-    property var triggeredListeners: [] // Keeps track of indices that have fired
-
-    // Master Monitor: Detects "absence of activity" almost immediately
-    property var masterMonitor: IdleMonitor {
-        id: masterMonitor
-        timeout: 1 // 1 second threshold to consider the session "idle"
-        respectInhibitors: true
-
-        onIsIdleChanged: {
-            if (isIdle) {
-                idleTimer.start();
-            } else {
-                idleTimer.stop();
-                root.resetIdleState();
+    // Each timeout is owned by the compositor's idle protocol. No per-second
+    // timer and no repeated axctl processes are needed while the desktop is idle.
+    property QtObject listenerMonitors: Instantiator {
+        model: Config.system.idle.listeners
+        delegate: Wayland.IdleMonitor {
+            required property var modelData
+            property bool fired: false
+            timeout: Math.max(1, modelData.timeout || 60)
+            respectInhibitors: true
+            onIsIdleChanged: {
+                if (isIdle) {
+                    fired = true;
+                    if (modelData.onTimeout) root.executeCommand(modelData.onTimeout);
+                } else if (fired) {
+                    fired = false;
+                    if (modelData.onResume) root.executeCommand(modelData.onResume);
+                }
             }
-        }
-    }
-
-    property var idleTimer: Timer {
-        id: idleTimer
-        interval: 1000 // 1 second tick
-        repeat: true
-        onTriggered: {
-            root.elapsedIdleTime += 1;
-            root.checkListeners();
         }
     }
 
@@ -108,40 +100,4 @@ Singleton {
         }
     }
 
-    function checkListeners() {
-        let listeners = Config.system.idle.listeners;
-        for (let i = 0; i < listeners.length; i++) {
-            let listener = listeners[i];
-            let tVal = listener.timeout || 60;
-
-            // If time matches and hasn't been triggered yet
-            if (root.elapsedIdleTime >= tVal && !root.triggeredListeners.includes(i)) {
-                if (listener.onTimeout) {
-                    console.log("Idle timer " + tVal + "s reached: " + listener.onTimeout);
-                    root.executeCommand(listener.onTimeout);
-                }
-                root.triggeredListeners.push(i);
-            }
-        }
-    }
-
-    function resetIdleState() {
-        let listeners = Config.system.idle.listeners;
-
-        // Execute resume commands for all triggered listeners
-        // We iterate backwards to undo latest states first (optional preference)
-        for (let i = root.triggeredListeners.length - 1; i >= 0; i--) {
-            let idx = root.triggeredListeners[i];
-            let listener = listeners[idx];
-
-            if (listener && listener.onResume) {
-                console.log("Idle resuming (undoing " + (listener.timeout || 0) + "s): " + listener.onResume);
-                root.executeCommand(listener.onResume);
-            }
-        }
-
-        // Reset counters
-        root.elapsedIdleTime = 0;
-        root.triggeredListeners = [];
-    }
 }

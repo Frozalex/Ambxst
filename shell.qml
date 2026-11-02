@@ -289,6 +289,7 @@ ShellRoot {
             // Critical services — init immediately (next tick)
             Qt.callLater(() => {
                 let _ = CaffeineClient.inhibit;
+                _ = LoqPowerPolicy.enabled; // Event-driven battery/AC selection for the LOQ launcher.
                 _ = IdleService.lockCmd; // Force init
                 _ = GlobalShortcuts.appId; // Force init (IPC pipe listener)
                 _ = WallpaperCommandService; // Force init (IPC wallpaper.set subscriber)
